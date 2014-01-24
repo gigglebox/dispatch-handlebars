@@ -21,10 +21,5 @@
         "src/dispatch-handlebars.php"
       ]
     }
-, "extra": {
-      "branch-alias": {
-        "dev-master": "dev-master"
-      }
-    }
 
 }
