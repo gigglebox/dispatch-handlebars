@@ -43,6 +43,7 @@ This package relies on the following `config()` entries:
 * `handlebars.layout` - layout file to use (must contain `{{{content}}}` for body)
 * `handlebars.views` - where the handlebars files are located (views and partials)
 * `handlebars.charset` - character set for encoding, defaults to `UTF-8`
+* `handlebars.partial_prefix` - prefix string to determine partial files, defaults to `_` (underscore)
 
 If you want template caching, set the following `config()` entry:
 
@@ -58,19 +59,35 @@ pulled from `dispatch.layout` and `dispatch.views` instead.
 contents of a `$template` into a `$layout` file. Use this function instead of
 dispatch's `render()` function.
 
+
 Here's a simple example of how it should be used.
 
 ```handlebars
-<!-- layout file -->
+<!-- _template-header.handlebars -->
 <!doctype html>
 <html>
 <head><title>{{title}}</title></head>
 <body>
-<!-- this replaces dispatch's content() call -->
-{{{content}}}
+```
+
+
+```handlebars
+<!-- _template-footer.handlebars -->
 </body>
 </html>
 ```
+
+
+```handlebars
+<!-- layout file -->
+{{>template-header}} <!-- auto prefixes the partial's name with an underscore -->
+
+<!-- this replaces dispatch's content() call -->
+{{{content}}}
+
+{{>template-footer}}
+```
+
 
 Here is the route view which will be plugged into the layout file.
 
@@ -79,15 +96,17 @@ Here is the route view which will be plugged into the layout file.
 <h1>Hello there, {{name}}!</h1>
 ```
 
+
 Here's a sample route that uses these templates.
 
 ```php
 <?php
 // setup handlebars
 config(array(
-  'handlebars.cache'  => 'path/to/cache/directory',
-  'handlebars.views'  => 'path/to/views',
-  'handlebars.layout' => 'layout'
+  'handlebars.cache'          => 'path/to/cache/directory',
+  'handlebars.views'          => 'path/to/views',
+  'handlebars.layout'         => 'layout'
+  'handlebars.partial_prefix' => '_'
 ));
 
 // render using a layout
@@ -123,19 +142,19 @@ This will output the following markup.
 
 ## Credits
 
-This package was written by [Brandtley McMinn] and is based on the [Dispatch-Mustache] package written by [Jesus A. Domingo] as an add-on for the
+This package was written by [Brandtley McMinn] and is largely based on the [Dispatch-Mustache] package written by [Jesus A. Domingo] as an add-on for the
 [Dispatch] PHP micro-framework.
 
 It depends on the [Handlebars PHP] library by [fzerorubigd] and [Behrooz Shabani] aka [everplays].
 
-[Brandtley McMinn]: https://github.com/giggleboxstudios
+[Brandtley McMinn]: https://github.com/giggleboxstudios/
 [Jesus A. Domingo]: http://noodlehaus.github.io/
 [Dispatch]: http://noodlehaus.github.io/dispatch/
 [Handlebars PHP]: https://github.com/XaminProject/handlebars.php
-[Dispatch-Mustache]: https://github.com/noodlehaus/dispatch-mustache
+[Dispatch-Mustache]: https://github.com/noodlehaus/dispatch-mustache/
 [fzerorubigd]: https://github.com/fzerorubigd/
 [Behrooz Shabani]: https://github.com/everplays/
 [everplays]: https://github.com/everplays/
 
 ## LICENSE
-MIT <http://noodlehaus.mit-license.org/>
+MIT <http://brandtleymcminn.mit-license.org/>
