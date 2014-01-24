@@ -3,7 +3,7 @@
 , "type": "library"
 , "description": "handlebars support for dispatch micro framework"
 , "keywords": ["dispatch", "handlebars", "template"]
-, "homepage": "https://github.com/GiggleboxStudios/dispatch-handlebars/"
+, "homepage": "https://github.com/GiggleboxStudios/dispatch-handlebars"
 , "license": "MIT"
 , "authors": [{
       "name": "Brandtley McMinn"
