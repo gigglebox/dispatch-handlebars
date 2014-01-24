@@ -1,0 +1,34 @@
+{
+  "name": "giggleboxstudios/dispatch-handlebars"
+, "type": "library"
+, "description": "handlebars support for dispatch micro framework"
+, "keywords": ["dispatch", "handlebars", "template"]
+
+, "homepage": "http://giggleboxstudios.github.io/dispatch-handlebars/"
+, "license": "MIT"
+
+, "authors": [{
+      "name": "Brandtley McMinn"
+    , "role": "Developer"
+    , "homepage": "http://giggleboxstudios.github.io/"
+    }]
+
+, "require": {
+      "php":                    ">= 5.4.0"
+    , "dispatch/dispatch":      ">= 2.6.2"
+    , "xamin/handlebars.php":   "dev-master"
+    }
+
+, "autoload": {
+      "files": [
+        "src/dispatch-handlebars.php"
+      ]
+    }
+
+, "extra": {
+      "branch-alias": {
+        "dev-master": "0.x-dev"
+      }
+    }
+
+}
