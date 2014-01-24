@@ -21,5 +21,8 @@
         "src/dispatch-handlebars.php"
       ]
     }
+, "alias": {
+      "dev-master": "@dev"
+    }
 
 }
