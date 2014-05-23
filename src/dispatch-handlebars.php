@@ -65,23 +65,37 @@ function handlebars_template($path, $locals = array()) {
 
     $views_path = config('handlebars.views') ?: config('dispatch.views');
 
-    // HANDLEBARS
+    //
+    // Handlebars
+    //
     $opts = array(
         'loader'            => new \Handlebars\Loader\FilesystemLoader($views_path)
       , 'partials_loader'   => new \Handlebars\Loader\FilesystemLoader($views_path, array( 'prefix' => config('handlebars.partials_prefix') ?: '_' ))
       , 'charset'           => config('handlebars.charset') ?: 'UTF-8'
       );
 
-
     if ($cache_path = config('handlebars.cache')) {
       $opts['cache'] = $cache_path;
     }
 
     $engine = new Handlebars\Handlebars($opts);
+
+
+    //
+    // Handlebars Helpers
+    //
+    $helpers = config('handlebars.helpers');
+
+    if ($helpers) {
+      foreach ($helpers as $helper => $callback) {
+        $engine->addHelper($helper, function($template, $context, $args, $source) use ($callback) {
+            return call_user_func($callback, $template, $context, $args, $source);
+          });
+      }
+    }
+
   }
 
-  // make sure $locals is an array, then render partial using $locals
+  // render partial using $locals
   return $engine->render($path, $locals);
 }
-
-?>
