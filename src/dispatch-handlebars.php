@@ -84,9 +84,8 @@ function handlebars_template($path, $locals = array()) {
     //
     // Handlebars Helpers
     //
-    $helpers = config('handlebars.helpers');
-
-    if ($helpers) {
+    
+    if ($helpers = config('handlebars.helpers')) {
       foreach ($helpers as $helper => $callback) {
         $engine->addHelper($helper, function($template, $context, $args, $source) use ($callback) {
             return call_user_func($callback, $template, $context, $args, $source);
