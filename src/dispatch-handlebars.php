@@ -42,6 +42,8 @@ function handlebars($path, $locals = array(), $layout = null) {
   }
 }
 
+
+
 /**
  * Renders a handlebars template specified by $path, using scope variables defined inside $locals.
  * This function uses config('dispatch.views') for the location of the templates and partials, unless overridden by config('handlebars.views').
@@ -91,9 +93,24 @@ function handlebars_template($path, $locals = array()) {
       }
     }
 
+    $engine->addHelper('capitalize', function($template, $context, $args, $source) {
+        return ucwords($context->get($args));
+      });
+
+    $engine->addHelper('upper', function($template, $context, $args, $source) {
+        return strtoupper($context->get($args));
+      });
+
+    $engine->addHelper('lower', function($template, $context, $args, $source) {
+        return strtolower($context->get($args));
+      });
   }
 
   // render partial using $locals
+  if (config('handlebars.minify')) {
+    return handlebars_minify($engine->render($path, $locals));
+  }
+
   return $engine->render($path, $locals);
 }
 
@@ -104,15 +121,14 @@ function handlebars_template($path, $locals = array()) {
  * @param  [type] $rootDirectory [description]
  * @return [type]                [description]
  */
-function handlebars_templates($rootDirectory, $minify=false) {
+function handlebars_templates($rootDirectory, $minify=true) {
 
   $templates        = array();
-  $layoutFile       = config('handlebars.layout') ?: config('dispatch.layout');
   $templatesFolder  = $rootDirectory .= config('handlebars.views') ?: config('dispatch.views');
-  $templatesFolder  = glob($templatesFolder . '/*.handlebars');
+  $layoutFile       = config('handlebars.layout') ?: config('dispatch.layout');
+  $templatesTemp    = glob($templatesFolder . '/*.handlebars');
 
   foreach ($templatesTemp as $index => $path) {
-    $fileContent  = file_get_contents($path);
     $fileName     = preg_replace('/.+\//', '', $path);
     $fileName     = preg_replace('/.handlebars/', '', $fileName);
     $cookieName   = preg_replace('/__/', '_', "handlebar_template_$fileName");
@@ -122,6 +138,8 @@ function handlebars_templates($rootDirectory, $minify=false) {
     if ($template = cookie($cookieName)) {
 
     } else {
+
+      $fileContent  = file_get_contents($path);
 
       // if we're parsing the layout file, ignore it
       if (preg_match('/'. $layoutFile .'/', $fileName)) { continue; }
@@ -137,20 +155,18 @@ function handlebars_templates($rootDirectory, $minify=false) {
 
       // Minify the template if we want to
       if ($minify) { $template = handlebars_minify($template); }
+
+      // Cache the templates string as a cookie
+      cookie($cookieName, handlebars_minify($template));
     }
 
     // Compile the templates list
     array_push($templates, $template);
 
-    // Cache the templates string as a cookie
-    cookie($cookieName, handlebars_minify($template));
   }
 
   return $templates;
-
 }
-
-
 
 
 
