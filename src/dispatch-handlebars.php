@@ -43,12 +43,9 @@ function handlebars($path, $locals = array(), $layout = null) {
 }
 
 /**
- * Renders a handlebars template specified by $path, using scope variables
- * defined inside $locals. This function uses config('dispatch.views')
- * for the location of the templates and partials, unless overridden
- * by config('handlebars.views').
- * Settings for 'handlebars.charset' and 'handlebars.layout' are also
- * pulled from config(), if present.
+ * Renders a handlebars template specified by $path, using scope variables defined inside $locals.
+ * This function uses config('dispatch.views') for the location of the templates and partials, unless overridden by config('handlebars.views').
+ * Settings for 'handlebars.charset' and 'handlebars.layout' are also pulled from config(), if present.
  *
  * @param string $path name of the .handlebars file to render
  * @param array $locals scope variables to load inside the template
@@ -84,8 +81,9 @@ function handlebars_template($path, $locals = array()) {
     //
     // Handlebars Helpers
     //
-    
-    if ($helpers = config('handlebars.helpers')) {
+    $helpers = config('handlebars.helpers');
+
+    if ($helpers) {
       foreach ($helpers as $helper => $callback) {
         $engine->addHelper($helper, function($template, $context, $args, $source) use ($callback) {
             return call_user_func($callback, $template, $context, $args, $source);
@@ -97,4 +95,75 @@ function handlebars_template($path, $locals = array()) {
 
   // render partial using $locals
   return $engine->render($path, $locals);
+}
+
+
+
+/**
+ * [handlebars_templates description]
+ * @param  [type] $rootDirectory [description]
+ * @return [type]                [description]
+ */
+function handlebars_templates($rootDirectory, $minify=false) {
+
+  $templates        = array();
+  $layoutFile       = config('handlebars.layout') ?: config('dispatch.layout');
+  $templatesFolder  = $rootDirectory .= config('handlebars.views') ?: config('dispatch.views');
+  $templatesFolder  = glob($templatesFolder . '/*.handlebars');
+
+  foreach ($templatesTemp as $index => $path) {
+    $fileContent  = file_get_contents($path);
+    $fileName     = preg_replace('/.+\//', '', $path);
+    $fileName     = preg_replace('/.handlebars/', '', $fileName);
+    $cookieName   = preg_replace('/__/', '_', "handlebar_template_$fileName");
+    $partial      = '';
+
+    // if the template exists as a cookie...
+    if ($template = cookie($cookieName)) {
+
+    } else {
+
+      // if we're parsing the layout file, ignore it
+      if (preg_match('/'. $layoutFile .'/', $fileName)) { continue; }
+
+      // Check if template is a partial
+      if (preg_match('/^_/', $fileName)) {
+        $partial  = 'data-handlebars-type="partial"';
+        $fileName = ltrim ($fileName,'_');
+      }
+
+      // Compile the template
+      $template = '<script type="text/x-handlebars-template" id="'.$fileName.'" data-handlebars-template="'.$fileName.'" '.$partial.'>'.$fileContent.'</script>';
+
+      // Minify the template if we want to
+      if ($minify) { $template = handlebars_minify($template); }
+    }
+
+    // Compile the templates list
+    array_push($templates, $template);
+
+    // Cache the templates string as a cookie
+    cookie("handlebar_template_$fileName", handlebars_minify($template));
+  }
+
+  return $templates;
+
+}
+
+
+
+
+
+/**
+ * Minifies the HTML source provided by
+ * @author --- http://jesin.tk/how-to-use-php-to-minify-html-output/
+ * @param  [type] $buffer [description]
+ * @return [type]         [description]
+ */
+function handlebars_minify($buffer) {
+
+  $buffer = preg_replace('/\s{2,}+/', '', $buffer);
+  $buffer = preg_replace('/[\r\n\t]/', '', $buffer);
+
+  return $buffer;
 }
