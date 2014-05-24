@@ -143,7 +143,7 @@ function handlebars_templates($rootDirectory, $minify=false) {
     array_push($templates, $template);
 
     // Cache the templates string as a cookie
-    cookie("handlebar_template_$fileName", handlebars_minify($template));
+    cookie($cookieName, handlebars_minify($template));
   }
 
   return $templates;
