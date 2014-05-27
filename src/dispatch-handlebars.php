@@ -104,6 +104,11 @@ function handlebars_template($path, $locals = array()) {
     $engine->addHelper('lower', function($template, $context, $args, $source) {
         return strtolower($context->get($args));
       });
+
+    $engine->addHelper('url', function($template, $context, $args, $source) {
+        return config('dispatch.url') . $context->get($args);
+      });
+
   }
 
   // render partial using $locals
@@ -121,10 +126,10 @@ function handlebars_template($path, $locals = array()) {
  * @param  [type] $rootDirectory [description]
  * @return [type]                [description]
  */
-function handlebars_templates($rootDirectory, $minify=true) {
+function handlebars_templates() {
 
   $templates        = array();
-  $templatesFolder  = $rootDirectory .= config('handlebars.views') ?: config('dispatch.views');
+  $templatesFolder  = config('handlebars.views') ?: config('dispatch.views');
   $layoutFile       = config('handlebars.layout') ?: config('dispatch.layout');
   $templatesTemp    = glob($templatesFolder . '/*.handlebars');
 
@@ -154,7 +159,7 @@ function handlebars_templates($rootDirectory, $minify=true) {
       $template = '<script type="text/x-handlebars-template" id="'.$fileName.'" data-handlebars-template="'.$fileName.'" '.$partial.'>'.$fileContent.'</script>';
 
       // Minify the template if we want to
-      if ($minify) { $template = handlebars_minify($template); }
+      if (config('handlebars.minify')) { $template = handlebars_minify($template); }
 
       // Cache the templates string as a cookie
       cookie($cookieName, handlebars_minify($template));
