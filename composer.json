@@ -1,14 +1,14 @@
 {
-  "name": "giggleboxstudios/dispatch-handlebars"
+  "name": "gigglebox/dispatch-handlebars"
 , "type": "library"
 , "description": "handlebars support for dispatch micro framework"
 , "keywords": ["dispatch", "handlebars", "template"]
-, "homepage": "https://github.com/GiggleboxStudios/dispatch-handlebars"
+, "homepage": "https://github.com/gigglebox/dispatch-handlebars"
 , "license": "MIT"
 , "authors": [{
       "name": "Brandtley McMinn"
-    , "email": "contact@giggleboxstudios.net"
-    , "homepage": "http://giggleboxstudios.github.io/"
+    , "email": "dev@giggleboxstudios.net"
+    , "homepage": "http://gigglebox.github.io/"
     , "role": "Developer"
     }]
 , "require": {
