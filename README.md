@@ -27,7 +27,7 @@ This repo assumes you know how to install dependencies via [Composer]
     "php": ">= 5.4.0",
     "dispatch/dispatch": ">= 2.6.2",
     "xamin/handlebars.php": "dev-master",
-    "giggleboxstudios/dispatch-handlebars": "dev-master"
+    "gigglebox/dispatch-handlebars": "dev-master"
   }
 }
 ```
